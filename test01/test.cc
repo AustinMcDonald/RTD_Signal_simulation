@@ -4,7 +4,6 @@
 #include <fstream>
 #include <ctime>
 
-
 //using namespace std;
 //using namespace Qpix;
 
