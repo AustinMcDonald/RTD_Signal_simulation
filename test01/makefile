@@ -1,5 +1,5 @@
-INCDIR = $(Testdir)/include
-LIBDIR = $(Testdir)/Library
+INCDIR = $(QpixDir)/include
+LIBDIR = $(QpixDir)/Library
 
 # Compiler flags
 CFLAGS = -Wall -Wextra -Wno-long-long \

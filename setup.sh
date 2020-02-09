@@ -3,6 +3,6 @@ export QpixDir=$PWD
 
 #cd /Users/austinmcdonald/software/ROOT/build/bin
 #source thisroot.sh 
-cd QpixDir
+cd $QpixDir
 
 
