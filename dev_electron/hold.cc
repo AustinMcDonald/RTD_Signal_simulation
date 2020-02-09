@@ -1,4 +1,6 @@
 //g++ -std=c++11 energy_to_electron.cc  -o ele `root-config --cflags --glibs`
+#include "Qpix/Random.h"
+
 #include <iostream>
 #include <vector>
 #include <cmath>
