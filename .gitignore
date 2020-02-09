@@ -2,3 +2,4 @@ Build/*
 Library/*
 
 *.Ds_Store
+*.txt
