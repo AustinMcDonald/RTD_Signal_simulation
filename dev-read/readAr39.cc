@@ -15,7 +15,10 @@
 
 #include <ctime>
 
-
+bool sortcol( const std::vector<double>& v1, 
+               const std::vector<double>& v2 ) { 
+ return v1[2] < v2[2]; 
+}
 using namespace std;
 int main() 
 {  
@@ -90,33 +93,30 @@ int main()
 
          qw+=1;
       }
-      /* temp.push_back(x);
-      temp.push_back(y);
-      temp.push_back(z);
-      temp.push_back(e);
-         
-      Event_Vector.push_back(temp);
-         */
-      //qw+=1;
    }
 
+   sort(Event_Vector.begin(), Event_Vector.end(),sortcol);
 
-   /* for (int i = 0; i < qw; i++) 
+   for (int i = 0; i < Event_Vector.size(); i++) 
    { 
       for (int j = 0; j < 3; j++)
       { 
-         std::cout<< Event_Vector[i][j]<< " "; 
+         //std::cout<< Event_Vector[i][j]<< " "; 
       } 
-      std::cout<< "\n"; 
-   }  */
+      //std::cout<< "\n"; 
+   } 
 
 
-   /* int qwe = 0;
-   for (auto it = begin (Event_Vector); it != end (Event_Vector); ++it) 
+   //int qwe = 0;
+
+   /* for (auto it1 = begin (Event_Vector); it1 != end (Event_Vector); ++it1) 
    {
-    it->doSomething ();
+      for (auto it2 = (*it1).begin(); it2 != (*it1).end(); ++ it2 )
+      {
+         //std::cout << (*it2) << " "; // print the strings
+      }
+      //std::cout<< "\n";  
    } */
-
 
    std::cout << "done" << std::endl;
 
