@@ -2,53 +2,55 @@
 #include "Qpix/XorShift256.h"
 #include "Qpix/Random.h"
 #include <fstream>
+#include <ctime>
+
 
 //using namespace std;
 //using namespace Qpix;
+
 int main()
 {
-    std::ofstream myfile;
-    //myfile.open ("XorShift256_raw.txt");
-    //myfile.open ("XorShift256_uni.txt");
-    myfile.open ("XorShift256_nor.txt");    
-
-    //double rnd  = next();
-    for(int i=0;i<10;++i)
+    std::ofstream myfile;    
+    int Nloop = 100000;
+    myfile.open ("RandomUniform.txt");
+    for(int i=0;i<Nloop;++i)
     {
-        //double rnd  = next();
-        //if ( (int)(rnd * 1000) % 2 == 0){rnd -= 0.5;}
-        //myfile << rnd <<std::endl;
-        //std::cout<< rnd <<std::endl;
-        //Qpix::RandomUniform() 
-        std::cout<< Qpix::RandomUniform()  <<std::endl;
-
+        //std::cout<< Qpix::RandomUniform()  <<std::endl;
+        myfile << Qpix::RandomUniform() <<std::endl;
     }
-
-    std::cout<< "break"  <<std::endl;
-
-    for(int i=0;i<10;++i)
-    {
-        std::cout<< Qpix::RandomUniform()  <<std::endl;
-
-    }
-
-    std::cout<< "break"  <<std::endl;
-    std::cout<< "break"  <<std::endl;
-    std::cout<< "break"  <<std::endl;
-
-    for(int i=0;i<10;++i)
-    {
-        std::cout<< Qpix::RandomNormal(5,2)  <<std::endl;
-
-    } 
-
-    for(int i=0;i<100000;++i)
-    {
-        myfile << Qpix::RandomNormal(5,2) <<std::endl;
-
-    } 
-
     myfile.close();
+
+
+    myfile.open ("RandomNormal.txt");
+    double mean  = 10;
+    double sigma = 2;
+    for(int i=0;i<Nloop;++i)
+    {
+        //std::cout<< Qpix::RandomNormal(mean,sigma)  <<std::endl;
+        myfile << Qpix::RandomNormal(mean,sigma) <<std::endl;
+    }
+    myfile.close();
+
+    clock_t time_req;
+
+    time_req = clock();
+    for(int i=0;i<100000000;++i){double a  = Qpix::RandomUniform();}
+    time_req = clock() - time_req;
+    double time = (float)time_req/CLOCKS_PER_SEC;
+    std::cout<< "100 000 000 random numbers (RandomUniform) took "<<time<<" Seconds"<<std::endl;
+    std::cout<< "Per loop is  "<<(time/100000000)*1e9<<" nano seconds"<<std::endl;
+
+    std::cout<< "\n "<<std::endl;
+
+    time_req = clock();
+    for(int i=0;i<100000000;++i){double a  = Qpix::RandomNormal(mean,sigma);}
+    time_req = clock() - time_req;
+    time = (float)time_req/CLOCKS_PER_SEC;
+    std::cout<< "100 000 000 random numbers (RandomNormal) took "<<time<<" Seconds"<<std::endl;
+    std::cout<< "Per loop is  "<<(time/100000000)*1e9<<" nano seconds"<<std::endl;
+
+
+
 
     return 0;
 }

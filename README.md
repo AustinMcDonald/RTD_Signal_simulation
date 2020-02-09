@@ -1,19 +1,31 @@
-well here it is 
+# Q-Pix RTD signal simulation
 
-to run it first set up the enviorment 
-source setup.sh
+Simulatin to get the response of qpix in LAr
 
-now to build 
+### Installing
+
+make a build directory 
+
+```
+mkdir Build
 cd Build
 cmake ../
-make
+make 
+```
 
-and move the lib
+Now move the joined libary to the Library folder
+
+```
 mv libQpix.a ../Library/.
 
-Now to run the random number example
-cd ../test01
+```
 
+
+Now the random number example can be ran
+```
+cd ../test01
 make test
 ./test
+```
 
+This generates 2 files that you can plot with the python notebook in the test01 directory

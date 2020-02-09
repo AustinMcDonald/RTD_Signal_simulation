@@ -6,7 +6,7 @@ namespace Qpix
     double RandomUniform() 
     {
         double XorShift  = next();
-        if ( (int)(XorShift * 1000) % 2 == 0){XorShift -= 0.5;}
+        //if ( (int)(XorShift * 1000) % 2 == 0){XorShift -= 0.5;}
         return XorShift; 
     }
 
