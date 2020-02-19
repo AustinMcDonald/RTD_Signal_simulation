@@ -6,7 +6,7 @@
 //#include <TTreeReaderArray.h>
 //#include <TCanvas.h>
 
-//#include <boost/range/combine.hpp>
+#include <boost/range/combine.hpp>
 
 #include <iostream>
 #include <vector>
@@ -15,21 +15,38 @@
 #include "Qpix/ReadG4txt.h"
 #include <ctime>
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-
-#include <math.h>
-
 bool sortcol( const std::vector<double>& v1, 
                const std::vector<double>& v2 ) { 
  return v1[2] < v2[2]; 
 }
-
+using namespace std;
 int main() 
 {  
    clock_t time_req;
    time_req = clock();
+
+
+   // Create a histogram for the values we read.
+   //TH1F *myHist = new TH1F("h1", "h1 title", 100, -4, 4);
+   // Open the file containing the tree.
+   //TFile *myFile = TFile::Open("/Users/austinmcdonald/projects/Q-pix/RTD_Signal_simulation/MC_data/Ar39_test/ar39_events.root");
+   // Create a TTreeReader for the tree, for instance by passing the
+   // TTree's name and the TDirectory / TFile it is in.
+   //TTreeReader myReader("anatree/anatree", myFile);
+
+   //This reads the vector
+   //TTreeReaderValue<std::vector<double>> idesenergy(myReader, "ides_energy");
+
+   //This reads the vector
+   //TTreeReaderValue<std::vector<double>> idesx(myReader, "ides_voxel_x");
+   //TTreeReaderValue<std::vector<double>> idesy(myReader, "ides_voxel_y");
+   //TTreeReaderValue<std::vector<double>> idesz(myReader, "ides_voxel_z");
+   
+   // this reads the event number. 
+   //TTreeReaderValue<int> ievent(myReader, "event");
+   
+   //This reads the PDG (electron is 11)
+   //TTreeReaderValue<std::vector<int>> iPDG(myReader, "PDG");
 
 
    double Wvalue, E_vel, DiffusionL, DiffusionT;
@@ -38,85 +55,8 @@ int main()
    DiffusionL = 6.8223/1e6;  //cm**2/mus
    DiffusionT = 13.1586/1e6; //cm**2/mus
 
-   // here x,y,z are in mm and edep is in MeV
-   std::vector<std::vector<double>> RawDataVector2;
-   std::vector<int> EventLengths2;
-   Qpix::DataFileParser2("test.txt", RawDataVector2, EventLengths2);
-   int Event = 5;
-   std::vector<std::vector<double>> eventt2;
-   eventt2 =  Qpix::GetEventVector(Event ,  EventLengths2,  RawDataVector2);
 
-   /* std::cout << "test" << std::endl;
-   for (int i = 0; i < eventt2.size(); i++) 
-   { 
-      for (int j = 0; j < eventt2[i].size(); j++)
-      {
-         std::cout << eventt2[i][j]  << " ";   
-      }
-      std::cout << std::endl; 
-      }
-   std::cout << "test over" << std::endl;
-   std::cout << "\n" << std::endl; */
-
-   std::vector< std::vector<double> > Electron_Event_Vector;
-   int qw=0;
-   double Etot = 0;
-   for (int i = 0; i < eventt2.size(); i++)
-   {
-      double x,y,z,e;
-      double new_x, new_y, new_z, Nelectron;
-      x = eventt2[i][0];
-      y = eventt2[i][1];
-      z = eventt2[i][2];
-      e = eventt2[i][3];
-      Etot+=e;
-
-
-      Nelectron = round(e*1e6/Wvalue);
-      for (int i = 0; i < Nelectron; i++) 
-      {
-
-         double T_drift = x/E_vel;
-         double sigma_L, sigma_T;
-         sigma_T = sqrt(2*DiffusionT*T_drift);
-         sigma_L = sqrt(2*DiffusionL*T_drift);
-         new_x = Qpix::RandomNormal(x,sigma_L);
-         new_y = Qpix::RandomNormal(y,sigma_T);
-         new_z = Qpix::RandomNormal(z,sigma_T);
-
-         std::vector<double> temp;
-         temp.push_back(new_x);
-         temp.push_back(new_y);
-         temp.push_back(new_z/E_vel);
-         //temp.push_back(e);
-            
-         Electron_Event_Vector.push_back(temp);
-
-         qw+=1;
-      }
-   }
-
-   sort(Electron_Event_Vector.begin(), Electron_Event_Vector.end(),sortcol);
-
-   
-   
-   std::cout<< "Number of electrons made " << qw << std::endl;
-   
-   std::cout<< "Total energy  " << Etot << std::endl;
-   
-   /* for (int i = 0; i < qw; i++) 
-   { 
-      for (int j = 0; j < 3; j++)
-      { 
-         //std::cout<< Event_Vector[i][j]<< " "; 
-      } 
-      //std::cout<< "\n"; 
-   }  */
-
-   
-
-
-   /* //myReader.SetEntry(1);
+   //myReader.SetEntry(1);
    int qw=0;
    std::vector< std::vector<double> > Event_Vector;
 
@@ -164,7 +104,7 @@ int main()
          //std::cout<< Event_Vector[i][j]<< " "; 
       } 
       //std::cout<< "\n"; 
-   }  */
+   } 
 
 
    //int qwe = 0;
