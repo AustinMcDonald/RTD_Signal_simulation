@@ -8,5 +8,5 @@ make
 
 mv libQpix.a ../Library/.
 
-cd ../dev-read/
+cd ../dev_electron/
 
