@@ -82,9 +82,9 @@ namespace Qpix
         {
             double x,y,z,e;
             double new_x, new_y, new_z, Nelectron;
-            x = eventt2[i][0];
-            y = eventt2[i][1];
-            z = eventt2[i][2];
+            x = eventt2[i][0]+50;
+            y = eventt2[i][1]+50;
+            z = eventt2[i][2]+50;
             e = eventt2[i][3];
 
             Nelectron = round(e*1e6/Wvalue);

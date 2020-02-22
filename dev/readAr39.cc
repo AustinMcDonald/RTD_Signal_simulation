@@ -84,19 +84,19 @@ int main()
    eventt2 =  Qpix::GetEventVector(Event ,  EventLengths2,  RawDataVector2);
 
 
-   std::vector<HIT> Electron_Event_Vector;
+    std::vector<HIT> Electron_Event_Vector;
     //Electron_Event_Vector.push_back(HIT());
-    Electron_Event_Vector = DiffuserTest2( Wvalue, E_vel, DiffusionL, DiffusionT, eventt2);
+    //Electron_Event_Vector = DiffuserTest2( Wvalue, E_vel, DiffusionL, DiffusionT, eventt2);
 
-    /* int event_SIZE = eventt2.size();
+    int event_SIZE = eventt2.size();
     int indexer = 0;
     for (int i = 0; i < event_SIZE; i++)
     {
         double x,y,z,e;
         double new_x, new_y, new_z, Nelectron;
-        x = eventt2[i][0];
-        y = eventt2[i][1];
-        z = eventt2[i][2];
+        x = eventt2[i][0]+50;
+        y = eventt2[i][1]+50;
+        z = eventt2[i][2]+50;
         e = eventt2[i][3];
 
         Nelectron = round(e*1e6/Wvalue);
@@ -111,11 +111,11 @@ int main()
             new_y = Qpix::RandomNormal(y,sigma_T);
             new_z = Qpix::RandomNormal(z,sigma_T);
 
-            //std::vector<double> temp;
-            //temp.push_back(new_x);
-            //temp.push_back(new_y);
-            //temp.push_back(new_z/E_vel);                
-            //Electron_Event_Vector.push_back(temp);
+            if (T_drift<0)
+            {
+                std::cout << T_drift << " " << sigma_T << std::endl;
+
+            }
             Electron_Event_Vector.push_back(HIT());
             Electron_Event_Vector[indexer].x_pos = new_x;
             Electron_Event_Vector[indexer].y_pos = new_y;
@@ -126,16 +126,16 @@ int main()
 
     }
 
-   sort(Electron_Event_Vector.begin(), Electron_Event_Vector.end(), compare); */
+   sort(Electron_Event_Vector.begin(), Electron_Event_Vector.end(), compare);
 
 
-   for (int i = 0; i < Electron_Event_Vector.size(); i++) 
+   /* for (int i = 0; i < Electron_Event_Vector.size(); i++) 
    { 
       std::cout<< Electron_Event_Vector[i].x_pos << " "; 
       std::cout<< Electron_Event_Vector[i].y_pos << " "; 
       std::cout<< Electron_Event_Vector[i].z_pos << " "; 
       std::cout<< "\n"; 
-   } 
+   }  */
 
 
 

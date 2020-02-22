@@ -1,6 +1,8 @@
 
-#include <iostream>
-#include <vector>
+//#include <iostream>
+//#include <vector>
+//#include <fstream>
+//#include <math.h>
 
 #include "Qpix/Random.h"
 #include "Qpix/ReadG4txt.h"
@@ -8,60 +10,8 @@
 
 #include <ctime>
 
-#include <fstream>
-
-#include <math.h>
-
-/* bool sortcol( const std::vector<double>& v1, 
-               const std::vector<double>& v2 ) { 
- return v1[2] < v2[2]; 
-}
-
-std::vector< std::vector<double>> DiffuserTest(double Wvalue,double E_vel,double DiffusionL,double DiffusionT,
-                                                                      const std::vector<std::vector<double>>& eventt2)
-{
-   std::vector< std::vector<double>> Electron_Event_Vector;
-   int event_SIZE = eventt2.size();
-   //int qw=0;
-   //double Etot = 0;
-   for (int i = 0; i < event_SIZE; i++)
-   {
-      double x,y,z,e;
-      double new_x, new_y, new_z, Nelectron;
-      x = eventt2[i][0];
-      y = eventt2[i][1];
-      z = eventt2[i][2];
-      e = eventt2[i][3];
-      //Etot+=e;
 
 
-      Nelectron = round(e*1e6/Wvalue);
-      for (int i = 0; i < Nelectron; i++) 
-      {
-
-         double T_drift = x/E_vel;
-         double sigma_L, sigma_T;
-         sigma_T = sqrt(2*DiffusionT*T_drift);
-         sigma_L = sqrt(2*DiffusionL*T_drift);
-         new_x = Qpix::RandomNormal(x,sigma_L);
-         new_y = Qpix::RandomNormal(y,sigma_T);
-         new_z = Qpix::RandomNormal(z,sigma_T);
-
-         std::vector<double> temp;
-         temp.push_back(new_x);
-         temp.push_back(new_y);
-         temp.push_back(new_z/E_vel);
-         //temp.push_back(e);
-            
-         Electron_Event_Vector.push_back(temp);
-
-         //qw+=1;
-      }
-   }
-
-   sort(Electron_Event_Vector.begin(), Electron_Event_Vector.end(),sortcol);
-   return Electron_Event_Vector;
-} */
 
 int main() 
 {  
@@ -85,66 +35,141 @@ int main()
 
 
    // this should be a diffuser function
-   std::vector< std::vector<double>> Electron_Event_Vector;
-   Electron_Event_Vector = Qpix::DiffuserTest( Wvalue, E_vel, DiffusionL, DiffusionT, eventt2);
-   /* int qw=0;
-   double Etot = 0;
-   for (int i = 0; i < eventt2.size(); i++)
-   {
-      double x,y,z,e;
-      double new_x, new_y, new_z, Nelectron;
-      x = eventt2[i][0];
-      y = eventt2[i][1];
-      z = eventt2[i][2];
-      e = eventt2[i][3];
-      Etot+=e;
+   //std::vector< std::vector<double>> Electron_Event_Vector;
 
+   std::vector<Qpix::HIT> Electron_Event_Vector;
+   Electron_Event_Vector = Qpix::DiffuserTest2( Wvalue, E_vel, DiffusionL, DiffusionT, eventt2);
 
-      Nelectron = round(e*1e6/Wvalue);
-      for (int i = 0; i < Nelectron; i++) 
-      {
-
-         double T_drift = x/E_vel;
-         double sigma_L, sigma_T;
-         sigma_T = sqrt(2*DiffusionT*T_drift);
-         sigma_L = sqrt(2*DiffusionL*T_drift);
-         new_x = Qpix::RandomNormal(x,sigma_L);
-         new_y = Qpix::RandomNormal(y,sigma_T);
-         new_z = Qpix::RandomNormal(z,sigma_T);
-
-         std::vector<double> temp;
-         temp.push_back(new_x);
-         temp.push_back(new_y);
-         temp.push_back(new_z/E_vel);
-         //temp.push_back(e);
-            
-         Electron_Event_Vector.push_back(temp);
-
-         qw+=1;
-      }
-   }
-
-   sort(Electron_Event_Vector.begin(), Electron_Event_Vector.end(),sortcol); */
-   
-   //std::cout<< "Number of electrons made " << qw << std::endl;
-   
-   //std::cout<< "Total energy  " << Etot << std::endl;
-   
-
-   
    for (int i = 0; i < Electron_Event_Vector.size(); i++) 
    { 
-      for (int j = 0; j < Electron_Event_Vector[i].size(); j++)
+      std::cout<< Electron_Event_Vector[i].x_pos << " "; 
+      std::cout<< Electron_Event_Vector[i].y_pos << " "; 
+      std::cout<< Electron_Event_Vector[i].z_pos << " "; 
+      std::cout<< "\n"; 
+   } 
+   
+
+
+   // Read out plane size in mm
+   int Readout_Dim = 100;
+   int Pix_Size = 4;
+   int N_Pix;
+   N_Pix = Readout_Dim/Pix_Size;
+   // Need to check this before the other code runs... but for now well wing it.
+   if( N_Pix*Pix_Size == Readout_Dim )
+   {
+      std::cout << "N_Pix is an integer" << std::endl;
+   }
+
+   
+   std::vector<std::vector<int>> data2d(N_Pix, std::vector<int>(N_Pix));
+
+   for (int i = 0; i < Electron_Event_Vector.size(); i++)
+   {
+      int Pix_Xloc, Pix_Yloc;
+      Pix_Xloc = (int) ceil(Electron_Event_Vector[i].x_pos);
+      Pix_Yloc = (int) ceil(Electron_Event_Vector[i].y_pos);
+
+      //data2d[Pix_Xloc][Pix_Yloc]+=1;
+      /* if (array2d[Pix_Xloc][Pix_Yloc] >= 7)
+      {
+         std::cout << "Threshold crossed" << std::endl;
+         array2d[Pix_Xloc][Pix_Yloc] = 0;
+      } */
+
+   }
+
+   for (int i = 0; i < N_Pix; i++) 
+   { 
+      for (int j = 0; j < N_Pix; j++)
       { 
-         std::cout<< Electron_Event_Vector[i][j]<< " "; 
+         std::cout<< data2d[i][j]<< " "; 
       } 
       std::cout<< "\n"; 
    } 
 
-   
 
 
 
+
+
+
+
+   // initilizing a 2d vector 
+   int ROW,COL;
+   ROW = 10;
+   COL = 10;
+   std::vector<std::vector<int>> array2d(ROW, std::vector<int>(COL));
+
+   /* for (int i = 0; i < ROW; i++)
+      for (int j = 0; j < COL; j++)
+         array2d[i][j] = 1; */
+
+   for (int i = 0; i < ROW; i++) 
+   { 
+      for (int j = 0; j < COL; j++)
+      { 
+         std::cout<< array2d[i][j]<< " "; 
+      } 
+      std::cout<< "\n"; 
+   } 
+
+   //making a test data set and printing
+   std::vector<std::vector<int>> Testvect(20, std::vector<int>(2));
+   for (int i = 0; i < 20; i++)
+      for (int j = 0; j < 2; j++)
+         Testvect[i][j] = 5;
+
+   for (int i = 0; i < 20; i++) 
+   { 
+      for (int j = 0; j < 2; j++)
+      { 
+         std::cout<< Testvect[i][j]<< " "; 
+      } 
+      std::cout<< "\n"; 
+   } 
+
+   // fill the array
+   for (int i = 0; i < 20; i++)
+   {
+      int Pix_Xloc, Pix_Yloc;
+      Pix_Xloc = Testvect[i][0];
+      Pix_Yloc = Testvect[i][1];
+
+      array2d[Pix_Xloc][Pix_Yloc]+=1;
+      if (array2d[Pix_Xloc][Pix_Yloc] >= 7)
+      {
+         std::cout << "Threshold crossed" << std::endl;
+         array2d[Pix_Xloc][Pix_Yloc] = 0;
+      }
+
+   }
+
+
+   //print the array
+
+   for (int i = 0; i < N_Pix; i++) 
+   { 
+      for (int j = 0; j < N_Pix; j++)
+      { 
+         std::cout<< data2d[i][j]<< " "; 
+      } 
+      std::cout<< "\n"; 
+   } 
+
+
+
+
+
+
+   for (int i = 0; i < ROW; i++) 
+      { 
+         for (int j = 0; j < COL; j++)
+         { 
+            std::cout<< array2d[i][j]<< " "; 
+         } 
+         std::cout<< "\n"; 
+      } 
    std::cout << "done" << std::endl;
 
    time_req = clock() - time_req;
