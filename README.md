@@ -29,3 +29,8 @@ make test
 ```
 
 This generates 2 files that you can plot with the python notebook in the test01 directory
+
+
+### test02
+This can be copiled in the sme way as above and this produces a file of the diffused electron cloud.
+

@@ -37,9 +37,9 @@ namespace Qpix
             double sigma_L, sigma_T;
             sigma_T = sqrt(2*DiffusionT*T_drift);
             sigma_L = sqrt(2*DiffusionL*T_drift);
-            new_x = Qpix::RandomNormal(x,sigma_L);
+            new_x = Qpix::RandomNormal(x,sigma_T);
             new_y = Qpix::RandomNormal(y,sigma_T);
-            new_z = Qpix::RandomNormal(z,sigma_T);
+            new_z = Qpix::RandomNormal(z,sigma_L);
 
             std::vector<double> temp;
             temp.push_back(new_x);
@@ -90,7 +90,7 @@ namespace Qpix
             Nelectron = round(e*1e6/Wvalue);
             for (int i = 0; i < Nelectron; i++) 
             {
-                double T_drift = x/E_vel;
+                double T_drift = z/E_vel;
                 double sigma_L, sigma_T;
                 sigma_T = sqrt(2*DiffusionT*T_drift);
                 sigma_L = sqrt(2*DiffusionL*T_drift);

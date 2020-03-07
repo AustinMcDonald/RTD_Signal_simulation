@@ -8,8 +8,8 @@ CFLAGS = -std=c++11 -Wall -Wextra -Wno-long-long \
 
 LDFLAGS = -L$(LIBDIR) -lQpix
 
-test: dev.cc 
-	$(CXX) $(CFLAGS) dev.cc
-	$(CXX)  -o dev dev.o $(LDFLAGS)
-	rm dev.o
+test: Electron_Diffusion.cc 
+	$(CXX) $(CFLAGS) Electron_Diffusion.cc
+	$(CXX)  -o Electron_Diffusion Electron_Diffusion.o $(LDFLAGS)
+	rm Electron_Diffusion.o
 
