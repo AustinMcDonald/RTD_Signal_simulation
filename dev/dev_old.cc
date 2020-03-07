@@ -10,8 +10,6 @@
 
 #include <ctime>
 
-//#include <algorithm>
-
 //#include <iostream>
 //#include <fstream>
 
@@ -32,9 +30,8 @@ int main()
    // here x,y,z are in mm and edep is in MeV
    std::vector<std::vector<double>> RawDataVector2;
    std::vector<int> EventLengths2;
-   //Qpix::DataFileParser2("test.txt", RawDataVector2, EventLengths2);
-   Qpix::DataFileParser2("test10MeV.txt", RawDataVector2, EventLengths2);
-   int Event = 5;
+   Qpix::DataFileParser2("test.txt", RawDataVector2, EventLengths2);
+   int Event = 0;
    std::vector<std::vector<double>> eventt2;
    eventt2 =  Qpix::GetEventVector(Event ,  EventLengths2,  RawDataVector2);
 
@@ -59,66 +56,44 @@ int main()
       for (int j = 0; j < N_Pix; j++)
          data2d[i][j] = 0;
 
-   std::vector<double> Gaussian_Noise;
-   for (int i = 0; i < 10000; i++)
-   {
-      // should be 200 and 20 per mus making it a gaussian of 20 every 100ns
-      Gaussian_Noise.push_back((int)Qpix::RandomNormal(200,30));
-      //Gaussian_Noise.push_back((int)Qpix::RandomPoisson(20));
-   }
-   int Noise_index = 0;
 
-
-   int Reset = 6000;
+   int Reset = 3000;
    int Event_Length = Electron_Event_Vector.size();
    std::cout << "Event_Length  " << Event_Length << std::endl;
 
-   // vect of hit pixels 
-   /* std::vector<std::vector<int>> Pixels_Hit;
-   for (int i=0; i<Event_Length; i++)
-   {
-      int Pix_Xloc, Pix_Yloc;
-      Pix_Xloc = (int) ceil(Electron_Event_Vector[i].x_pos/4);
-      Pix_Yloc = (int) ceil(Electron_Event_Vector[i].y_pos/4);
-      std::vector<int> tmp = {Pix_Xloc, Pix_Yloc};
-      if(std::find(Pixels_Hit.begin(), Pixels_Hit.end(), tmp) != Pixels_Hit.end()){}
-      else{Pixels_Hit.push_back( tmp );}
-   }  */
 
-   /* for (int i=0; i<Pixels_Hit.size(); i++)
-   {
-      std::cout << Pixels_Hit[i][0] << " " << Pixels_Hit[i][1] << std::endl;
-   } */
-
-
-
-
-
-   std::vector<std::vector<double>> RTD;
+   std::ofstream testdata;
+   testdata.open ("exampledata.txt");
   
    int GlobalTime = 0;
 
    for (int i = 0; i < Event_Length; i++)
    {
-      int Pix_Xloc, Pix_Yloc;
+      int Pix_Xloc, Pix_Yloc, Pix_time;
       Pix_Xloc = (int) ceil(Electron_Event_Vector[i].x_pos/4);
       Pix_Yloc = (int) ceil(Electron_Event_Vector[i].y_pos/4);
-      double Pix_time = Electron_Event_Vector[i].z_pos/E_vel;
+      Pix_time = (int) ceil(Electron_Event_Vector[i].z_pos/E_vel);
+      //std::cout << Pix_time << std::endl;
 
       while (GlobalTime < Pix_time)
       {
+         //std::cout << "Global "<< Pix_time << std::endl;
+         int CT = 0;
          for (int i = 0; i < N_Pix; i++) 
          { 
             for (int j = 0; j < N_Pix; j++)
             { 
-               data2d[i][j]+=Gaussian_Noise[Noise_index];
-               Noise_index += 1;
-               if (Noise_index >= 10000){Noise_index = 0;}
+               
+               data2d[i][j]+=(int)Qpix::RandomNormal(200,20);
+               CT+=1;
+               //std::cout<< data2d[i][j]<< " "; 
                if (data2d[i][j] >= Reset)
                {
+                  //std::cout << "Threshold crossed" <<
+                  //   " "<< i << " " << j << " " << GlobalTime << std::endl;
+
+                  testdata << i << " " << j << " " << GlobalTime << std::endl;
                   data2d[i][j] = 0;
-                  std::vector<double> tmp = {(double)i, (double)j, (double)GlobalTime};
-                  RTD.push_back(tmp);
                }
 
             } 
@@ -127,31 +102,37 @@ int main()
          GlobalTime+=1;
       }
 
+      
+
       data2d[Pix_Xloc][Pix_Yloc]+=1;
       if (data2d[Pix_Xloc][Pix_Yloc] >= Reset)
       {
+         //std::cout << "Threshold crossed" <<
+         //    " "<< Pix_Xloc << " " << Pix_Yloc << " " << Electron_Event_Vector[i].z_pos << std::endl;
+
+         testdata << Pix_Xloc << " " << Pix_Yloc << " " << Electron_Event_Vector[i].z_pos << std::endl;
          data2d[Pix_Xloc][Pix_Yloc] = 0;
-         std::vector<double> tmp = {(double)Pix_Xloc, (double)Pix_Yloc, Pix_time};
-         RTD.push_back(tmp);
       }
 
    }
 
-   while (GlobalTime < 1000)
+   while (GlobalTime < 100)
    {
+      int CT = 0;
       for (int i = 0; i < N_Pix; i++) 
       { 
          for (int j = 0; j < N_Pix; j++)
          { 
             
-            data2d[i][j]+=Gaussian_Noise[Noise_index];
-            Noise_index += 1;
-            if (Noise_index >= 10000){Noise_index = 0;}
+            data2d[i][j]+=(int)Qpix::RandomNormal(200,20);
+            CT+=1;
             if (data2d[i][j] >= Reset)
             {
+               //std::cout << "Threshold crossed" <<
+               //   " "<< i << " " << j << " " << GlobalTime << std::endl;
+
+               testdata << i << " " << j << " " << GlobalTime << std::endl;
                data2d[i][j] = 0;
-               std::vector<double> tmp = {(double)i, (double)j, (double)GlobalTime};
-               RTD.push_back(tmp);
             }
 
          } 
@@ -160,36 +141,7 @@ int main()
       GlobalTime+=1;
    }
 
-
-
-
-   int RTD_len = RTD.size();
-
-
-   std::ofstream testdata2;
-   testdata2.open ("exampledata2.txt");
-   for (int Xpix = 0; Xpix < N_Pix; Xpix++)
-   {
-      for (int Ypix = 0; Ypix < N_Pix; Ypix++)
-      {
-         double Delta_T = 0;
-         double resetold=0;
-         for (int i = 0; i < RTD_len; i++)
-         {
-
-            if ( (RTD[i][0] == Xpix) && (RTD[i][1] == Ypix) )
-            {
-               double reset = RTD[i][2];
-               Delta_T = reset - resetold;
-               testdata2 << Xpix << ' ' << Ypix << ' ' << RTD[i][2] << ' ' << Delta_T << std::endl;
-               resetold = RTD[i][2];
-
-            }
-         }
-      }
-   }
-   testdata2.close();
-   
+   testdata.close();
 
 
 
@@ -205,6 +157,10 @@ int main()
    }  */
 
 
+
+
+
+
    std::cout << "done" << std::endl;
 
    time_req = clock() - time_req;
@@ -212,16 +168,3 @@ int main()
    std::cout<< "The operation took "<<time<<" Seconds"<<std::endl;
    return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
