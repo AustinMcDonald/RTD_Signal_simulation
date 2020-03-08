@@ -1,6 +1,7 @@
 #include "Qpix/XorShift256.h"
 #include <math.h>
-//#include <cmath>     // for atan, sqrt, log, cos
+#include <vector>
+
 
 
 namespace Qpix
@@ -91,6 +92,16 @@ namespace Qpix
         
     }
 
+
+    std::vector<double> Make_Gaussian_Noise(double mu, double sigma, int Noise_Vector_Size)
+    {
+    std::vector<double> Gaussian_Noise;
+    for (int i = 0; i < Noise_Vector_Size; i++)
+    {  // should be 200 and 20 per mus making it a gaussian of 20 every 100ns
+        Gaussian_Noise.push_back((int)Qpix::RandomNormal(mu, sigma));
+    }
+    return Gaussian_Noise;
+    }
     
 
 }

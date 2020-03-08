@@ -7,10 +7,9 @@ CFLAGS = -std=c++11 -Wall -Wextra -Wno-long-long \
 	-I$(INCDIR)
 
 LDFLAGS = -L$(LIBDIR) -lQpix
-#LDFLAGS += `root-config --glibs`
 
-test: readAr39.cc 
-	$(CXX) $(CFLAGS) readAr39.cc
-	$(CXX)  -o readAr39 readAr39.o $(LDFLAGS)
-	rm readAr39.o
+test: dev-pix.cc 
+	$(CXX) $(CFLAGS) dev-pix.cc
+	$(CXX)  -o dev-pix dev-pix.o $(LDFLAGS)
+	rm dev-pix.o
 
