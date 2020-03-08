@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 //#include <math.h>
 #include "Qpix/ElectronHandler.h"
 

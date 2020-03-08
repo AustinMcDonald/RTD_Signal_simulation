@@ -175,7 +175,7 @@ int main()
    DiffusionL = 682.23/1e6;  //mm**2/mus
    DiffusionT = 1315.86/1e6; //mm**2/mus
 
-   std::string Input_File  = "Muon_250MeV.txt";
+   std::string Input_File  = "Muon_1GeV.txt";
    std::string Output_File = "exampledata4.txt";
 
    // Read out plane size in mm

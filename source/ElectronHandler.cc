@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <algorithm>
 
 #include "Qpix/Random.h"
 

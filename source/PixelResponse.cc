@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 //#include <math.h>
 #include "Qpix/ElectronHandler.h"
-
 
 namespace Qpix
 {
@@ -30,7 +30,6 @@ namespace Qpix
         for (int i = 0; i < N_Pix; i++)
             for (int j = 0; j < N_Pix; j++)
                 readout[i][j] = 0;
-        
         return readout;
     }
 
