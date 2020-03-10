@@ -4,24 +4,21 @@ Simulatin to get the response of qpix in LAr
 
 ### Installing
 
-make a build directory 
+After you clone the repo the setup.sh script should set up the enviorment and run cmake.
+You will need to run this setup every time you launch a new terminal. 
 
 ```
-mkdir Build
-cd Build
-cmake ../
-make 
+bash setup.sh
 ```
 
-Now move the joined libary to the Library folder
-
-```
-mv libQpix.a ../Library/.
-
-```
+The toy examples are in test01 and test02
 
 
-Now the random number example can be ran
+
+
+### test01
+
+is the random number example can be ran form inside the test01 folder e.g.
 ```
 cd ../test01
 make test
