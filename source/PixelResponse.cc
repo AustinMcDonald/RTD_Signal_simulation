@@ -2,11 +2,12 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
-//#include <math.h>
+#include <math.h>
 #include "Qpix/ElectronHandler.h"
 
 namespace Qpix
 {
+
     
     std::vector<std::vector<int>> Make_Readout_plane(int Readout_Dim, int Pix_Size)
     {
@@ -34,7 +35,8 @@ namespace Qpix
     }
 
 
-    std::vector<std::vector<int>> Find_Unique_Pixels(int Pix_Size, int Event_Length, std::vector<Qpix::HIT> Electron_Event_Vector)
+
+    /* std::vector<std::vector<int>> Find_Unique_Pixels(int Pix_Size, int Event_Length, std::vector<Qpix::HIT> Electron_Event_Vector)
     {
         std::vector<std::vector<int>> Pixels_Hit;
         for (int i=0; i<Event_Length; i++)
@@ -47,14 +49,39 @@ namespace Qpix
             else{Pixels_Hit.push_back( tmp );}
         }
         return Pixels_Hit;
-    }
+    } */
 
+    std::vector<std::vector<int>> Find_Unique_Pixels(int Pix_Size, int Event_Length, std::vector<HIT> Electron_Event_Vector)
+    {
+        std::vector<std::vector<int>> Pixels_Hit;
+        std::vector<int> tmp;
+        for (int i=0; i<Event_Length; i++)
+        {
+            int Pix_Xloc, Pix_Yloc;
+            Pix_Xloc = (int) ceil(Electron_Event_Vector[i].x_pos/Pix_Size);
+            Pix_Yloc = (int) ceil(Electron_Event_Vector[i].y_pos/Pix_Size);
+            tmp.push_back((int)(Pix_Xloc*10000+Pix_Yloc));
+        }
         
+        std::sort( tmp.begin(), tmp.end() );
+        tmp.erase(std::unique(tmp.begin(), tmp.end()), tmp.end());
+        
+        for (int i=0; i<tmp.size(); i++)
+        {
+            double PixID = tmp[i]/10000.0, fractpart, intpart;
+            fractpart = modf (PixID , &intpart);
+            std::vector<int> tmp = {(int)(intpart), (int)(fractpart*10000)};
+            Pixels_Hit.push_back( tmp );
+        }
+        return Pixels_Hit;
+    }
+        
+
 
     std::vector<std::vector<double>> Make_Reset_Response(int Reset, int Pix_Size, double E_vel, int Event_Length, 
                                                         int Pixels_Hit_Len, int Noise_Vector_Size, int Start_Time, int End_Time,
-                                                        std::vector<double> Gaussian_Noise, std::vector<std::vector<int>> Pixels_Hit,
-                                                        std::vector<std::vector<int>> data2d, std::vector<Qpix::HIT> Electron_Event_Vector)
+                                                        std::vector<double>& Gaussian_Noise, std::vector<std::vector<int>>& Pixels_Hit,
+                                                        std::vector<std::vector<int>>& data2d, std::vector<Qpix::HIT>& Electron_Event_Vector)
     {
         std::vector<std::vector<double>> RTD;
         int Noise_index = 0;
@@ -120,7 +147,8 @@ namespace Qpix
 
 
 
-    void Write_Reset_Data(std::string Output_File, int Pixels_Hit_Len, std::vector<std::vector<int>> Pixels_Hit, std::vector<std::vector<double>> RTD)
+
+    void Write_Reset_Data(std::string Output_File, int Pixels_Hit_Len, std::vector<std::vector<int>>& Pixels_Hit, std::vector<std::vector<double>>& RTD)
     {
         int RTD_len = RTD.size();
         std::ofstream data_out;
@@ -152,5 +180,76 @@ namespace Qpix
 
 
 
+
+
+
+
+
+
+    void Make_Reset_ResponseV(int Reset, int Pix_Size, double E_vel, int Event_Length, 
+                                                        int Pixels_Hit_Len, int Noise_Vector_Size, int Start_Time, int End_Time,
+                                                        std::vector<double>& Gaussian_Noise, std::vector<std::vector<int>>& Pixels_Hit,
+                                                        std::vector<std::vector<int>>& data2d, std::vector<Qpix::HIT>& Electron_Event_Vector, std::vector<std::vector<double>>& RTD)
+    {
+        
+        int Noise_index = 0;
+        int GlobalTime = Start_Time;
+
+        for (int i = 0; i < Event_Length; i++)
+        {
+            int Pix_Xloc, Pix_Yloc;
+            Pix_Xloc = (int) ceil(Electron_Event_Vector[i].x_pos/Pix_Size);
+            Pix_Yloc = (int) ceil(Electron_Event_Vector[i].y_pos/Pix_Size);
+            double Pix_time = Electron_Event_Vector[i].z_pos/E_vel;
+
+            while (GlobalTime < Pix_time)
+            {
+                for (int curr = 0; curr < Pixels_Hit_Len; curr++) 
+                { 
+                    int X_curr = Pixels_Hit[curr][0];
+                    int Y_curr = Pixels_Hit[curr][1];
+                    data2d[X_curr][Y_curr]+=Gaussian_Noise[Noise_index];
+                    Noise_index += 1;
+                    if (Noise_index >= Noise_Vector_Size){Noise_index = 0;}
+                    if (data2d[X_curr][Y_curr] >= Reset)
+                    {
+                    data2d[X_curr][Y_curr] = 0;
+                    std::vector<double> tmp = {(double)X_curr, (double)Y_curr, (double)GlobalTime};
+                    RTD.push_back(tmp);
+                    }
+                } 
+                GlobalTime+=1;
+            }
+
+            data2d[Pix_Xloc][Pix_Yloc]+=1;
+            if (data2d[Pix_Xloc][Pix_Yloc] >= Reset)
+            {
+                data2d[Pix_Xloc][Pix_Yloc] = 0;
+                std::vector<double> tmp = {(double)Pix_Xloc, (double)Pix_Yloc, Pix_time};
+                RTD.push_back(tmp);
+            }
+
+        }
+
+        while (GlobalTime < End_Time)
+        {
+            for (int curr = 0; curr < Pixels_Hit_Len; curr++) 
+            { 
+                int X_curr = Pixels_Hit[curr][0];
+                int Y_curr = Pixels_Hit[curr][1];
+                data2d[X_curr][Y_curr]+=Gaussian_Noise[Noise_index];
+                Noise_index += 1;
+                if (Noise_index >= Noise_Vector_Size){Noise_index = 0;}
+                if (data2d[X_curr][Y_curr] >= Reset)
+                {
+                    data2d[X_curr][Y_curr] = 0;
+                    std::vector<double> tmp = {(double)X_curr, (double)Y_curr, (double)GlobalTime};
+                    RTD.push_back(tmp);
+                }
+            } 
+            GlobalTime+=1;
+        }
+        return ;
+    }
 
 }

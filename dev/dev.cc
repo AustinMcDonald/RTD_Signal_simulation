@@ -11,8 +11,6 @@ int main()
    clock_t time_req;
    time_req = clock();
    
-
-
    double Wvalue, E_vel, DiffusionL, DiffusionT;
    Wvalue = 23.6; // in eV
    //E_vel = 0.1648; //cm/mus
@@ -21,6 +19,7 @@ int main()
    DiffusionT = 1315.86/1e6; //mm**2/mus
 
    std::string Input_File  = "Muon_1GeV.txt";
+   //std::string Input_File  = "Ar39.txt";
    std::string Output_File = "exampledata4.txt";
 
    // Read out plane size in mm
@@ -76,8 +75,10 @@ int main()
    std::cout << "Starting the Qpix response" << std::endl;
    std::vector<std::vector<double>> RTD;
    int Start_Time = 0, End_Time = 1000;
-   RTD = Qpix::Make_Reset_Response(Reset, Pix_Size, E_vel, Event_Length, Pixels_Hit_Len, Noise_Vector_Size, Start_Time, End_Time,
-                               Gaussian_Noise, Pixels_Hit, data2d, Electron_Event_Vector);
+   //RTD = Qpix::Make_Reset_Response(Reset, Pix_Size, E_vel, Event_Length, Pixels_Hit_Len, Noise_Vector_Size, Start_Time, End_Time,
+   //                            Gaussian_Noise, Pixels_Hit, data2d, Electron_Event_Vector);
+   Qpix::Make_Reset_ResponseV(Reset, Pix_Size, E_vel, Event_Length, Pixels_Hit_Len, Noise_Vector_Size, Start_Time, End_Time,
+                               Gaussian_Noise, Pixels_Hit, data2d, Electron_Event_Vector, RTD);
 
 
    std::cout << "*********************************************" << std::endl;
